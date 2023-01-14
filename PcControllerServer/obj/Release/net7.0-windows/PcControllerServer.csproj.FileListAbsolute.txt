@@ -1,0 +1,15 @@
+D:\CSHARP\PcControllerServer\PcControllerServer\bin\Release\net7.0-windows\PcControllerServer.exe
+D:\CSHARP\PcControllerServer\PcControllerServer\bin\Release\net7.0-windows\PcControllerServer.deps.json
+D:\CSHARP\PcControllerServer\PcControllerServer\bin\Release\net7.0-windows\PcControllerServer.runtimeconfig.json
+D:\CSHARP\PcControllerServer\PcControllerServer\bin\Release\net7.0-windows\PcControllerServer.dll
+D:\CSHARP\PcControllerServer\PcControllerServer\bin\Release\net7.0-windows\PcControllerServer.pdb
+D:\CSHARP\PcControllerServer\PcControllerServer\obj\Release\net7.0-windows\PcControllerServer.csproj.AssemblyReference.cache
+D:\CSHARP\PcControllerServer\PcControllerServer\obj\Release\net7.0-windows\PcControllerServer.GeneratedMSBuildEditorConfig.editorconfig
+D:\CSHARP\PcControllerServer\PcControllerServer\obj\Release\net7.0-windows\PcControllerServer.AssemblyInfoInputs.cache
+D:\CSHARP\PcControllerServer\PcControllerServer\obj\Release\net7.0-windows\PcControllerServer.AssemblyInfo.cs
+D:\CSHARP\PcControllerServer\PcControllerServer\obj\Release\net7.0-windows\PcControllerServer.csproj.CoreCompileInputs.cache
+D:\CSHARP\PcControllerServer\PcControllerServer\obj\Release\net7.0-windows\PcControllerServer.dll
+D:\CSHARP\PcControllerServer\PcControllerServer\obj\Release\net7.0-windows\refint\PcControllerServer.dll
+D:\CSHARP\PcControllerServer\PcControllerServer\obj\Release\net7.0-windows\PcControllerServer.pdb
+D:\CSHARP\PcControllerServer\PcControllerServer\obj\Release\net7.0-windows\PcControllerServer.genruntimeconfig.cache
+D:\CSHARP\PcControllerServer\PcControllerServer\obj\Release\net7.0-windows\ref\PcControllerServer.dll

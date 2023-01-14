@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>PcControllerServer</id>
+    <version>1.0.0</version>
+    <authors>PcControllerServer</authors>
+    <description>Package Description</description>
+    <dependencies>
+      <group targetFramework="net7.0-windows7.0" />
+    </dependencies>
+    <frameworkReferences>
+      <group targetFramework="net7.0-windows7.0">
+        <frameworkReference name="Microsoft.WindowsDesktop.App.WindowsForms" />
+      </group>
+    </frameworkReferences>
+    <contentFiles>
+      <files include="any/net7.0-windows7.0/logo.ico" buildAction="Content" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="D:\CSHARP\PcControllerServer\PcControllerServer\bin\Release\net7.0-windows\PcControllerServer.runtimeconfig.json" target="lib\net7.0-windows7.0\PcControllerServer.runtimeconfig.json" />
+    <file src="D:\CSHARP\PcControllerServer\PcControllerServer\bin\Release\net7.0-windows\PcControllerServer.dll" target="lib\net7.0-windows7.0\PcControllerServer.dll" />
+    <file src="D:\CSHARP\PcControllerServer\PcControllerServer\logo.ico" target="content\logo.ico" />
+    <file src="D:\CSHARP\PcControllerServer\PcControllerServer\logo.ico" target="contentFiles\any\net7.0-windows7.0\logo.ico" />
+  </files>
+</package>

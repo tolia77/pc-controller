@@ -1,0 +1,5 @@
+C:\Users\Meezmo\Desktop\PcController\PcControllerServer.exe
+C:\Users\Meezmo\Desktop\PcController\PcControllerServer.dll
+C:\Users\Meezmo\Desktop\PcController\PcControllerServer.deps.json
+C:\Users\Meezmo\Desktop\PcController\PcControllerServer.runtimeconfig.json
+C:\Users\Meezmo\Desktop\PcController\PcControllerServer.pdb
