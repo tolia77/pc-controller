@@ -4,7 +4,7 @@ using System.Text;
 using System.Diagnostics;
 using Functions;
 
-public class Program
+class Program
 {
     static readonly IPHostEntry Host = Dns.GetHostEntry("localhost");
     static readonly IPAddress IpAddress = Host.AddressList[1];
@@ -17,43 +17,36 @@ public class Program
 
     public class Server
     {
-        private readonly IPEndPoint testConnectionEndPoint;
-        private readonly IPEndPoint moveMouseEndPoint;
-        private readonly IPEndPoint sendScreenshotEndPoint;
-        private readonly IPEndPoint openLinkEndPoint;
-        private readonly IPEndPoint cmdExecuteEndPoint;
-        private readonly IPEndPoint shutdownPCEndPoint;
-        private readonly IPEndPoint restartPCEndPoint;
+        private readonly IPEndPoint testConnectionEndPoint = new(0, 49999);
+        private readonly IPEndPoint moveMouseEndPoint = new(0, 50000);
+        private readonly IPEndPoint sendScreenshotEndPoint = new(0, 50001);
+        private readonly IPEndPoint openLinkEndPoint = new(0, 50002);
+        private readonly IPEndPoint cmdExecuteEndPoint = new(0, 50003);
+        private readonly IPEndPoint shutdownPCEndPoint = new(0, 50004);
+        private readonly IPEndPoint restartPCEndPoint = new(0, 50005);
         private readonly Thread testConnectionThread;
         private readonly Thread moveMouseThread;
         private readonly Thread sendScreenshotThread;
         private readonly Thread openLinkThread;
         private readonly Thread cmdExecuteThread;
-        private readonly Thread shutdownPCThread;
-        private readonly Thread restartPCThread;
+        private readonly Thread shutdownPcThread;
+        private readonly Thread restartPcThread;
         public Server()
         {
-            testConnectionEndPoint = new(0, 49999);
-            moveMouseEndPoint = new(0, 50000);
-            sendScreenshotEndPoint = new(0, 50001);
-            openLinkEndPoint = new(0, 50002);
-            cmdExecuteEndPoint = new(0, 50003);
-            shutdownPCEndPoint = new(0, 50004);
-            restartPCEndPoint = new(0, 50005);
             testConnectionThread = new(TestConnection);
             moveMouseThread = new(MoveMouse);
             sendScreenshotThread = new(SendScreenshot);
             openLinkThread = new(OpenLink);
             cmdExecuteThread = new(CmdExecute);
-            shutdownPCThread = new(ShutdownPC);
-            restartPCThread = new(RestartPC);
+            shutdownPcThread = new(ShutdownPC);
+            restartPcThread = new(RestartPC);
             testConnectionThread.Start();
             moveMouseThread.Start();
             sendScreenshotThread.Start();
             openLinkThread.Start();
             cmdExecuteThread.Start();
-            shutdownPCThread.Start();
-            restartPCThread.Start();
+            shutdownPcThread.Start();
+            restartPcThread.Start();
             using (Socket sender = new(AddressFamily.InterNetwork, SocketType.Dgram, 0))
             {
                 sender.Connect("8.8.8.8", 65530);
@@ -86,17 +79,13 @@ public class Program
             {
                 Socket handler = listener.Accept();
                 Console.WriteLine("Connected");
-                string data = "";
                 byte[] bytes = new byte[1024];
                 try
                 {
-                    int bytesRec = handler.Receive(bytes);
-                    data += Encoding.UTF8.GetString(bytes, 0, bytesRec);
-                    string[] dataArr = new string[2];
-                    dataArr = data.Split(' ');
-                    int moves = Convert.ToInt32(dataArr[0]);
-                    int interval = Convert.ToInt32(dataArr[1]);
-                    if (data == "break") break;
+                    handler.Receive(bytes);
+                    string data = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+                    int moves = Convert.ToInt32(data.Split()[0]);
+                    int interval = Convert.ToInt32(data.Split()[1]);
                     Thread moveThread = new(() => Mouse.Move(moves, interval));
                     moveThread.Start();
                     byte[] msg = Encoding.UTF8.GetBytes("SUCCESS");
@@ -110,6 +99,8 @@ public class Program
                 catch (Exception e)
                 {
                     Console.WriteLine($"ERROR: {e}");
+                    byte[] msg = Encoding.UTF8.GetBytes("ERROR");
+                    handler.Send(msg);
                 }
                 handler.Close();
             }
@@ -127,7 +118,7 @@ public class Program
                 try
                 {
                     byte[] buffer = Screenshot.MakeScreenshot();
-                    int v = handler.Send(buffer, buffer.Length, SocketFlags.None);
+                    handler.Send(buffer, buffer.Length, SocketFlags.None);
                 }
                 catch (SocketException)
                 {
@@ -137,6 +128,8 @@ public class Program
                 catch (Exception e)
                 {
                     Console.WriteLine($"ERROR: {e}");
+                    byte[] msg = Encoding.UTF8.GetBytes("ERROR");
+                    handler.Send(msg);
                 }
                 handler.Close();
             }
@@ -151,12 +144,11 @@ public class Program
             {
                 Socket handler = listener.Accept();
                 Console.WriteLine("Connected");
-                string data = "";
                 byte[] bytes = new byte[1024];
                 try
                 {
-                    int bytesRec = handler.Receive(bytes);
-                    data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                    handler.Receive(bytes);
+                    string data = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
                     Process.Start(data);
                     handler.Send(Encoding.ASCII.GetBytes("SUCCESS"));
                 }
@@ -173,6 +165,8 @@ public class Program
                 catch (Exception e)
                 {
                     Console.WriteLine($"ERROR: {e}");
+                    byte[] msg = Encoding.UTF8.GetBytes("ERROR");
+                    handler.Send(msg);
                 }
                 handler.Close();
             }
@@ -187,12 +181,11 @@ public class Program
             {
                 Socket handler = listener.Accept();
                 Console.WriteLine("Connected");
-                string data = "";
                 byte[] bytes = new byte[1024];
                 try
                 {
-                    int bytesRec = handler.Receive(bytes);
-                    data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                    handler.Receive(bytes);
+                    string data = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
                     Cmd.Execute(data);
                     handler.Send(Encoding.ASCII.GetBytes("SUCCESS"));
                 }
@@ -209,6 +202,8 @@ public class Program
                 catch (Exception e)
                 {
                     Console.WriteLine($"ERROR: {e}");
+                    byte[] msg = Encoding.UTF8.GetBytes("ERROR");
+                    handler.Send(msg);
                 }
                 handler.Close();
             }
