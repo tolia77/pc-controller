@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
+using static System.Windows.Forms.DataFormats;
+
 namespace Functions
 {
     public partial class Win32
@@ -48,9 +50,9 @@ namespace Functions
             Bitmap captureBitmap = new(captureRectangle.Width, captureRectangle.Height, PixelFormat.Format32bppArgb);
             Graphics captureGraphics = Graphics.FromImage(captureBitmap);
             captureGraphics.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
-            captureBitmap.Save("screenshot.jpeg", ImageFormat.Jpeg);
-            byte[] imgData = File.ReadAllBytes(@"screenshot.jpeg");
-            return imgData;
+            using MemoryStream ms = new();
+            captureBitmap.Save(ms, ImageFormat.Jpeg);
+            return ms.ToArray();
         }
     }
     public class Cmd

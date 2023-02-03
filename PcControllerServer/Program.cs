@@ -149,6 +149,7 @@ class Program
                 {
                     handler.Receive(bytes);
                     string data = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+                    Console.WriteLine(data);
                     Process.Start(data);
                     handler.Send(Encoding.ASCII.GetBytes("SUCCESS"));
                 }
