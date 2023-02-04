@@ -24,6 +24,7 @@ class Program
         private readonly IPEndPoint cmdExecuteEndPoint = new(0, 50003);
         private readonly IPEndPoint shutdownPCEndPoint = new(0, 50004);
         private readonly IPEndPoint restartPCEndPoint = new(0, 50005);
+        private readonly IPEndPoint streamScreenEndPoint = new(0, 50006);
         private readonly Thread testConnectionThread;
         private readonly Thread moveMouseThread;
         private readonly Thread sendScreenshotThread;
@@ -31,6 +32,7 @@ class Program
         private readonly Thread cmdExecuteThread;
         private readonly Thread shutdownPcThread;
         private readonly Thread restartPcThread;
+        private readonly Thread streamScreenThread;
         public Server()
         {
             testConnectionThread = new(TestConnection);
@@ -40,6 +42,7 @@ class Program
             cmdExecuteThread = new(CmdExecute);
             shutdownPcThread = new(ShutdownPC);
             restartPcThread = new(RestartPC);
+            streamScreenThread= new(StreamScreen);
             testConnectionThread.Start();
             moveMouseThread.Start();
             sendScreenshotThread.Start();
@@ -47,6 +50,7 @@ class Program
             cmdExecuteThread.Start();
             shutdownPcThread.Start();
             restartPcThread.Start();
+            streamScreenThread.Start();
             using (Socket sender = new(AddressFamily.InterNetwork, SocketType.Dgram, 0))
             {
                 sender.Connect("8.8.8.8", 65530);
@@ -130,6 +134,39 @@ class Program
                     Console.WriteLine($"ERROR: {e}");
                     byte[] msg = Encoding.UTF8.GetBytes("ERROR");
                     handler.Send(msg);
+                }
+                handler.Close();
+            }
+        }
+
+        private void StreamScreen()
+        {
+            Socket listener = new(IpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            listener.Bind(streamScreenEndPoint);
+            listener.Listen(10);
+            while (true)
+            {
+                Socket handler = listener.Accept();
+                Console.WriteLine("Connected");
+                while (handler.Connected)
+                {
+                    try
+                    {
+                        byte[] buffer = Screenshot.MakeScreenshot();
+                        handler.Send(Encoding.ASCII.GetBytes(buffer.Length.ToString()));
+                        handler.Send(buffer, buffer.Length, SocketFlags.None);
+                    }
+                    catch (SocketException)
+                    {
+                        handler.Shutdown(SocketShutdown.Both);
+                        Console.WriteLine("Connection aborted");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"ERROR: {e}");
+                        byte[] msg = Encoding.UTF8.GetBytes("ERROR");
+                        handler.Send(msg);
+                    }
                 }
                 handler.Close();
             }
