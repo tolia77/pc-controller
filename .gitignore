@@ -1,5 +1,6 @@
 PcControllerFrameworkDependent/
 PcControllerSelfContained/
-PcControllerServer/PcControllerServer/bin
+PcControllerServer/PcControllerServer/bin/
+.vs/
 PcControllerFrameworkDependent.7z
 PcControllerSelfContained.7z
