@@ -4,27 +4,28 @@ using System.Text;
 using System.Diagnostics;
 using Functions;
 
-class Program
+namespace SocketServer
 {
-    static readonly IPHostEntry Host = Dns.GetHostEntry("localhost");
-    static readonly IPAddress IpAddress = Host.AddressList[1];
-
-    public static int Main()
+    class Program
     {
-        _ = new Server();
-        return 0;
+        public static int Main()
+        {
+            _ = new Server();
+            return 0;
+        }
     }
-
     public class Server
     {
-        private readonly IPEndPoint testConnectionEndPoint = new(0, 49999);
-        private readonly IPEndPoint moveMouseEndPoint = new(0, 50000);
-        private readonly IPEndPoint sendScreenshotEndPoint = new(0, 50001);
-        private readonly IPEndPoint openLinkEndPoint = new(0, 50002);
-        private readonly IPEndPoint cmdExecuteEndPoint = new(0, 50003);
-        private readonly IPEndPoint shutdownPCEndPoint = new(0, 50004);
-        private readonly IPEndPoint restartPCEndPoint = new(0, 50005);
-        private readonly IPEndPoint streamScreenEndPoint = new(0, 50006);
+        private static readonly IPHostEntry Host = Dns.GetHostEntry("localhost");
+        private static readonly IPAddress IpAddress = Host.AddressList[1];
+        public IPEndPoint TestConnectionEndPoint = new(0, 49999);
+        public IPEndPoint MoveMouseEndPoint = new(0, 50000);
+        public IPEndPoint SendScreenshotEndPoint = new(0, 50001);
+        public IPEndPoint OpenLinkEndPoint = new(0, 50002);
+        public IPEndPoint CmdExecuteEndPoint = new(0, 50003);
+        public IPEndPoint ShutdownPCEndPoint = new(0, 50004);
+        public IPEndPoint RestartPCEndPoint = new(0, 50005);
+        public IPEndPoint StreamScreenEndPoint = new(0, 50006);
         private readonly Thread testConnectionThread;
         private readonly Thread moveMouseThread;
         private readonly Thread sendScreenshotThread;
@@ -35,35 +36,44 @@ class Program
         private readonly Thread streamScreenThread;
         public Server()
         {
-            testConnectionThread = new(TestConnection);
-            moveMouseThread = new(MoveMouse);
-            sendScreenshotThread = new(SendScreenshot);
-            openLinkThread = new(OpenLink);
-            cmdExecuteThread = new(CmdExecute);
-            shutdownPcThread = new(ShutdownPC);
-            restartPcThread = new(RestartPC);
-            streamScreenThread= new(StreamScreen);
-            testConnectionThread.Start();
-            moveMouseThread.Start();
-            sendScreenshotThread.Start();
-            openLinkThread.Start();
-            cmdExecuteThread.Start();
-            shutdownPcThread.Start();
-            restartPcThread.Start();
-            streamScreenThread.Start();
-            using (Socket sender = new(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            try
             {
-                sender.Connect("8.8.8.8", 65530);
-                IPEndPoint endPoint = sender.LocalEndPoint as IPEndPoint;
-                Console.WriteLine("Your local ip: " + endPoint.Address.ToString());
+                using (Socket socketSender = new(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+                {
+                    socketSender.Connect("8.8.8.8", 65530);
+                    IPEndPoint endPoint = socketSender.LocalEndPoint as IPEndPoint;
+                    Console.WriteLine("Your local ip: " + endPoint.Address.ToString());
+                }
+                testConnectionThread = new(TestConnection);
+                moveMouseThread = new(MoveMouse);
+                sendScreenshotThread = new(SendScreenshot);
+                openLinkThread = new(OpenLink);
+                cmdExecuteThread = new(CmdExecute);
+                shutdownPcThread = new(ShutdownPC);
+                restartPcThread = new(RestartPC);
+                streamScreenThread = new(StreamScreen);
+                testConnectionThread.Start();
+                moveMouseThread.Start();
+                sendScreenshotThread.Start();
+                openLinkThread.Start();
+                cmdExecuteThread.Start();
+                shutdownPcThread.Start();
+                restartPcThread.Start();
+                streamScreenThread.Start();
+                Console.WriteLine("Server started");
             }
-            Console.WriteLine("Server started");
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
         }
 
         private void TestConnection()
         {
             Socket listener = new(IpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            listener.Bind(testConnectionEndPoint);
+            listener.Bind(TestConnectionEndPoint);
             listener.Listen(10);
             while (true)
             {
@@ -77,7 +87,7 @@ class Program
         private void MoveMouse()
         {
             Socket listener = new(IpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            listener.Bind(moveMouseEndPoint);
+            listener.Bind(MoveMouseEndPoint);
             listener.Listen(10);
             while (true)
             {
@@ -113,7 +123,7 @@ class Program
         private void SendScreenshot()
         {
             Socket listener = new(IpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            listener.Bind(sendScreenshotEndPoint);
+            listener.Bind(SendScreenshotEndPoint);
             listener.Listen(10);
             while (true)
             {
@@ -142,7 +152,7 @@ class Program
         private void StreamScreen()
         {
             Socket listener = new(IpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            listener.Bind(streamScreenEndPoint);
+            listener.Bind(StreamScreenEndPoint);
             listener.Listen(10);
             while (true)
             {
@@ -153,7 +163,7 @@ class Program
                     try
                     {
                         byte[] buffer = Screenshot.MakeScreenshot();
-                        handler.Send(Encoding.ASCII.GetBytes(buffer.Length.ToString()));
+                        handler.Send(BitConverter.GetBytes(buffer.Length));
                         handler.Send(buffer, buffer.Length, SocketFlags.None);
                     }
                     catch (SocketException)
@@ -175,7 +185,7 @@ class Program
         private void OpenLink()
         {
             Socket listener = new(IpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            listener.Bind(openLinkEndPoint);
+            listener.Bind(OpenLinkEndPoint);
             listener.Listen(10);
             while (true)
             {
@@ -186,8 +196,7 @@ class Program
                 {
                     handler.Receive(bytes);
                     string data = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
-                    Console.WriteLine(data);
-                    Process.Start(data);
+                    Cmd.OpenLink(data);
                     handler.Send(Encoding.ASCII.GetBytes("SUCCESS"));
                 }
                 catch (SocketException)
@@ -213,7 +222,7 @@ class Program
         private void CmdExecute()
         {
             Socket listener = new(IpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            listener.Bind(cmdExecuteEndPoint);
+            listener.Bind(CmdExecuteEndPoint);
             listener.Listen(10);
             while (true)
             {
@@ -250,7 +259,7 @@ class Program
         private void ShutdownPC()
         {
             Socket listener = new(IpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            listener.Bind(shutdownPCEndPoint);
+            listener.Bind(ShutdownPCEndPoint);
             listener.Listen(10);
             while (true)
             {
@@ -263,7 +272,7 @@ class Program
         private void RestartPC()
         {
             Socket listener = new(IpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            listener.Bind(restartPCEndPoint);
+            listener.Bind(RestartPCEndPoint);
             listener.Listen(10);
             while (true)
             {

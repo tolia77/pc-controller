@@ -69,5 +69,9 @@ namespace Functions
             process.StartInfo = startInfo;
             process.Start();
         }
+        public static void OpenLink(string link)
+        {
+            Process.Start(new ProcessStartInfo { FileName = link, UseShellExecute = true });
+        }
     }
 }
