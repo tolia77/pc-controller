@@ -18,14 +18,14 @@ namespace SocketServer
     {
         private static readonly IPHostEntry Host = Dns.GetHostEntry("localhost");
         private static readonly IPAddress IpAddress = Host.AddressList[1];
-        public IPEndPoint TestConnectionEndPoint = new(0, 49999);
-        public IPEndPoint MoveMouseEndPoint = new(0, 50000);
-        public IPEndPoint SendScreenshotEndPoint = new(0, 50001);
-        public IPEndPoint OpenLinkEndPoint = new(0, 50002);
-        public IPEndPoint CmdExecuteEndPoint = new(0, 50003);
-        public IPEndPoint ShutdownPCEndPoint = new(0, 50004);
-        public IPEndPoint RestartPCEndPoint = new(0, 50005);
-        public IPEndPoint StreamScreenEndPoint = new(0, 50006);
+        public IPEndPoint TestConnectionEndPoint { get; set; } = new(0, 39999);
+        public IPEndPoint MoveMouseEndPoint { get; set; } = new(0, 40000);
+        public IPEndPoint SendScreenshotEndPoint { get; set; } = new(0, 40001);
+        public IPEndPoint OpenLinkEndPoint { get; set; } = new(0, 40002);
+        public IPEndPoint CmdExecuteEndPoint { get; set; } = new(0, 40003);
+        public IPEndPoint ShutdownPCEndPoint { get; set; } = new(0, 40004);
+        public IPEndPoint RestartPCEndPoint { get; set; } = new(0, 40005);
+        public IPEndPoint StreamScreenEndPoint { get; set; } = new(0, 40006);
         private readonly Thread testConnectionThread;
         private readonly Thread moveMouseThread;
         private readonly Thread sendScreenshotThread;
