@@ -1,0 +1,5 @@
+D:\CSHARP\PcControllerServer\PcControllerFrameworkDependent\PcControllerServer.exe
+D:\CSHARP\PcControllerServer\PcControllerFrameworkDependent\PcControllerServer.dll
+D:\CSHARP\PcControllerServer\PcControllerFrameworkDependent\PcControllerServer.deps.json
+D:\CSHARP\PcControllerServer\PcControllerFrameworkDependent\PcControllerServer.runtimeconfig.json
+D:\CSHARP\PcControllerServer\PcControllerFrameworkDependent\PcControllerServer.pdb

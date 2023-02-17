@@ -232,7 +232,7 @@ D:\CSHARP\PcControllerServer\PcControllerSelfContained\createdump.exe
 D:\CSHARP\PcControllerServer\PcControllerSelfContained\hostfxr.dll
 D:\CSHARP\PcControllerServer\PcControllerSelfContained\hostpolicy.dll
 D:\CSHARP\PcControllerServer\PcControllerSelfContained\mscordaccore.dll
-D:\CSHARP\PcControllerServer\PcControllerSelfContained\mscordaccore_x86_x86_7.0.122.56804.dll
+D:\CSHARP\PcControllerServer\PcControllerSelfContained\mscordaccore_x86_x86_7.0.222.60605.dll
 D:\CSHARP\PcControllerServer\PcControllerSelfContained\mscordbi.dll
 D:\CSHARP\PcControllerServer\PcControllerSelfContained\mscorrc.dll
 D:\CSHARP\PcControllerServer\PcControllerSelfContained\msquic.dll
